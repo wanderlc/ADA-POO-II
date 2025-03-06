@@ -1,3 +1,4 @@
+// 7. GerenciadorVendas.java (Correção na persistencia do valor e carga de vendas abertas)
 package com.adacommerce.vendas;
 
 import com.adacommerce.clientes.Cliente;
@@ -34,6 +35,16 @@ public class GerenciadorVendas {
         }
     }
 
+    // Getter para proximoIdVenda
+    public int getProximoIdVenda() {
+        return proximoIdVenda;
+    }
+
+    public void adicionarVenda(Venda venda) {
+        vendas.add(venda);
+        salvarVendasParaCsv(); // Salva no CSV após adicionar venda
+    }
+
     public void criarVenda(Cliente cliente) {
         int id = proximoIdVenda++;
         Venda novaVenda = new Venda(id, cliente);
@@ -45,9 +56,9 @@ public class GerenciadorVendas {
     public void adicionarItemVenda(int vendaId, Produto produto, int quantidade, double precoVenda) {
         Venda venda = buscarVendaPorId(vendaId);
         if (venda != null) {
+            System.out.println("GerenciadorVendas: Venda encontrada, adicionando item..."); // ADICIONADO
             venda.adicionarItem(new ItemVenda(produto, quantidade, precoVenda));
-            // NOTA: ItemVendas NÃO são persistidos em CSV neste exemplo simplificado.
-            // Se precisar persistir ItemVendas, a lógica de CSV de Vendas precisaria ser mais complexa.
+            salvarVendasParaCsv(); // Salva no CSV após adicionar item
         } else {
             System.out.println("Venda não encontrada!");
         }
@@ -62,6 +73,22 @@ public class GerenciadorVendas {
             System.out.println("Venda não encontrada!");
         }
     }
+
+    public void realizarPagamentoVenda(int vendaId) {
+        Venda venda = buscarVendaPorId(vendaId);
+        if (venda != null) {
+            if ("Aguardando pagamento".equals(venda.getStatusPagamento())) {
+                venda.setStatusPagamento("Pago");
+                salvarVendasParaCsv();
+                System.out.println("Pagamento da Venda " + vendaId + " realizado com sucesso.");
+            } else {
+                System.out.println("Venda " + vendaId + " não está aguardando pagamento ou já foi paga.");
+            }
+        } else {
+            System.out.println("Venda não encontrada!");
+        }
+    }
+
 
     public Venda buscarVendaPorId(int id) {
         for (Venda venda : vendas) {
@@ -87,20 +114,24 @@ public class GerenciadorVendas {
             String linha;
             while ((linha = br.readLine()) != null) {
                 String[] campos = linha.split(",");
-                if (campos.length >= 5) { // Ajustado para >= 5 para statusPagamento (pode ser vazio)
+                if (campos.length >= 6) { // Ajustado para >= 6 para incluir totalVenda
                     try {
                         int id = Integer.parseInt(campos[0]);
                         int clienteId = Integer.parseInt(campos[1]);
                         String data = campos[2];
                         String status = campos[3];
-                        String statusPagamento = campos.length > 4 ? campos[4] : ""; // Pega statusPagamento se existir, senão vazio
+                        String statusPagamento = campos[4];
+                        String totalVendaStr = campos[5]; // Carrega o valor total do CSV (para referência/histórico)
 
                         Cliente cliente = gerenciadorClientes.buscarClientePorId(clienteId);
                         if (cliente != null) {
                             Venda venda = new Venda(id, cliente);
                             venda.setData(data);
                             venda.setStatus(status);
-                            venda.setStatusPagamento(statusPagamento); // Define statusPagamento carregado do CSV
+                            venda.setStatusPagamento(statusPagamento);
+                            // Valor total carregado do CSV, pode ser usado para logs ou histórico
+                            // No entanto, o valor "real" é recalculado dinamicamente
+                            // Carrega itens da venda AQUI se fosse persistir itens no CSV, mas não estamos neste exemplo simplificado
                             vendas.add(venda);
                         } else {
                             System.err.println("Cliente não encontrado para venda no CSV: " + linha);
@@ -126,9 +157,10 @@ public class GerenciadorVendas {
     private void salvarVendasParaCsv() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(VENDAS_FILE))) {
             for (Venda venda : vendas) {
-                // Salva apenas os dados básicos da venda, ItemVendas não são persistidos neste exemplo
+                // Salva os dados básicos da venda, e agora o valor total
                 int clienteId = (venda.getCliente() != null) ? venda.getCliente().getId() : 0; // Pega ID do cliente ou 0 se nulo
-                bw.write(venda.getId() + "," + clienteId + "," + venda.getData() + "," + venda.getStatus() + "," + venda.getStatusPagamento());
+                double totalVenda = venda.calcularTotalVenda(); // Calcula o valor total da venda
+                bw.write(venda.getId() + "," + clienteId + "," + venda.getData() + "," + venda.getStatus() + "," + venda.getStatusPagamento() + "," + totalVenda);
                 bw.newLine();
             }
             System.out.println("Vendas salvas no arquivo CSV.");

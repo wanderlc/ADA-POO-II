@@ -1,3 +1,4 @@
+// 6. Venda.java (Pequena modificação para adicionar setter de statusPagamento)
 package com.adacommerce.vendas;
 
 import com.adacommerce.clientes.Cliente;
@@ -37,7 +38,7 @@ public class Venda {
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
     public void setData(String data) { this.data = data; }
     public void setStatus(String status) { this.status = status; }
-    public void setStatusPagamento(String statusPagamento) { this.statusPagamento = statusPagamento; }
+    public void setStatusPagamento(String statusPagamento) { this.statusPagamento = statusPagamento; } // Setter adicionado
 
 
     // Métodos da venda
@@ -53,5 +54,14 @@ public class Venda {
             status = "fechado";
             System.out.println("Notificação enviada para " + cliente.getEmail() + ": Pedido finalizado!");
         }
+    }
+
+    // Novo método para calcular o total da venda
+    public double calcularTotalVenda() {
+        double total = 0.0;
+        for (ItemVenda item : itens) {
+            total += item.getPrecoVenda() * item.getQuantidade();
+        }
+        return total;
     }
 }
