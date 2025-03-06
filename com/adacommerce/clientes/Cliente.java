@@ -1,10 +1,13 @@
-package Clientes;
+package com.adacommerce.clientes;
 
 public class Cliente {
     private int id;
     private String nome;
     private String documento;
     private String email;
+
+    public Cliente() {
+    }
 
     public Cliente(int id, String nome, String documento, String email) {
         this.id = id;
@@ -13,32 +16,12 @@ public class Cliente {
         this.email = email;
     }
 
-    // Getters e Setters
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
+    public String getNome() { return nome; }
+    public String getDocumento() { return documento; }
+    public String getEmail() { return email; }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDocumento() {
-        return documento;
-    }
-
-    public void setDocumento(String documento) {
-        this.documento = documento;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public void setNome(String nome) { this.nome = nome; }
+    public void setDocumento(String documento) { this.documento = documento; }
+    public void setEmail(String email) { this.email = email; }
 }

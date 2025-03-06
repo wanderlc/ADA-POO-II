@@ -1,5 +1,3 @@
-public class ItemVenda {
-}
 package com.adacommerce.vendas;
 
 import com.adacommerce.produtos.Produto;
@@ -15,24 +13,12 @@ public class ItemVenda {
         this.precoVenda = precoVenda;
     }
 
-    // Getters e Setters
-    public Produto getProduto() {
-        return produto;
-    }
+    // Getters
+    public Produto getProduto() { return produto; }
+    public int getQuantidade() { return quantidade; }
+    public double getPrecoVenda() { return precoVenda; }
 
-    public int getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public double getPrecoVenda() {
-        return precoVenda;
-    }
-
-    public void setPrecoVenda(double precoVenda) {
-        this.precoVenda = precoVenda;
-    }
+    // Setters
+    public void setQuantidade(int quantidade) { this.quantidade = quantidade; }
+    public void setPrecoVenda(double precoVenda) { this.precoVenda = precoVenda; }
 }
