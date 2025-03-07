@@ -1,3 +1,4 @@
+// 2. GerenciadorClientes.java (Adicionado método atualizarCliente)
 package com.adacommerce.clientes;
 
 import java.io.BufferedReader;
@@ -7,15 +8,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File; // Importação adicionada para a classe File
+import java.io.File;
 
 public class GerenciadorClientes {
     private List<Cliente> clientes = new ArrayList<>();
-    private static final String CLIENTES_FILE = "clientes.csv"; // Nome do arquivo CSV
+    private static final String CLIENTES_FILE = "clientes.csv";
     private static int proximoIdCliente = 1;
 
     public GerenciadorClientes() {
-        carregarClientesDeCsv(); // Carrega os clientes do CSV ao iniciar
+        carregarClientesDeCsv();
         if (!clientes.isEmpty()) {
             proximoIdCliente = clientes.stream()
                     .mapToInt(Cliente::getId)
@@ -24,11 +25,15 @@ public class GerenciadorClientes {
         }
     }
 
+    public int getProximoIdCliente() {
+        return proximoIdCliente;
+    }
+
     public void cadastrarCliente(String nome, String documento, String email) {
         int id = proximoIdCliente++;
         Cliente novoCliente = new Cliente(id, nome, documento, email);
         clientes.add(novoCliente);
-        salvarClientesParaCsv(); // Salva no CSV após cadastrar
+        salvarClientesParaCsv();
         System.out.println("Cliente cadastrado com sucesso! ID: " + id);
     }
 
@@ -56,6 +61,20 @@ public class GerenciadorClientes {
         return null;
     }
 
+    public void atualizarCliente(int id, String nome, String documento, String email) {
+        Cliente clienteExistente = buscarClientePorId(id);
+        if (clienteExistente != null) {
+            clienteExistente.setNome(nome);
+            clienteExistente.setDocumento(documento);
+            clienteExistente.setEmail(email);
+            salvarClientesParaCsv();
+            System.out.println("Cliente ID " + id + " atualizado com sucesso!");
+        } else {
+            System.out.println("Cliente ID " + id + " não encontrado.");
+        }
+    }
+
+
     public List<Cliente> getClientes() {
         return clientes;
     }
@@ -64,7 +83,7 @@ public class GerenciadorClientes {
         File file = new File(CLIENTES_FILE);
         if (!file.exists()) {
             clientes = new ArrayList<>();
-            return; // Se o arquivo não existe, inicia com lista vazia
+            return;
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(CLIENTES_FILE))) {
@@ -81,17 +100,15 @@ public class GerenciadorClientes {
                         clientes.add(cliente);
                     } catch (NumberFormatException e) {
                         System.err.println("Erro ao ler ID do cliente no CSV: " + linha);
-                        // Ignora a linha com erro de formato
                     }
                 } else {
                     System.err.println("Formato inválido de linha no CSV de clientes: " + linha);
-                    // Ignora a linha com formato inválido
                 }
             }
             System.out.println("Clientes carregados do arquivo CSV.");
         } catch (IOException e) {
             System.err.println("Erro ao carregar clientes do CSV: " + e.getMessage());
-            clientes = new ArrayList<>(); // Garante que a lista não seja null em caso de erro
+            clientes = new ArrayList<>();
         }
     }
 

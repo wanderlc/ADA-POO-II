@@ -1,4 +1,4 @@
-// 8. Main.java (Menu corrigido para aceitar entrada 3.4 e similares)
+// 8. Main.java (Menu reorganizado e funcionalidades de venda adicionadas)
 package com.adacommerce;
 
 import com.adacommerce.clientes.Cliente;
@@ -18,44 +18,51 @@ public class Main {
     private static Venda vendaAtual = null;
 
     public static void main(String[] args) {
-        int opcao = -1; // Inicializa com um valor inválido
+        int opcao = -1;
         do {
             System.out.println("\n=== Menu Ada Commerce ===");
             System.out.println("1. Clientes");
             System.out.println("   1.1. Cadastrar Cliente");
             System.out.println("   1.2. Listar Clientes");
+            System.out.println("   1.3. Atualizar Cliente"); // Nova opção
             System.out.println("2. Produtos");
             System.out.println("   2.1. Cadastrar Produto");
             System.out.println("   2.2. Listar Produtos");
+            System.out.println("   2.3. Atualizar Produto"); // Nova opção
             System.out.println("3. Vendas");
             System.out.println("   3.1. Criar Venda");
             System.out.println("   3.2. Adicionar Item à Venda");
-            System.out.println("   3.3. Finalizar Venda");
-            System.out.println("   3.4. Realizar Pagamento de Venda");
-            System.out.println("   3.5. Listar Vendas Detalhado");
+            System.out.println("   3.3. Remover Item da Venda"); // Nova opção
+            System.out.println("   3.4. Alterar Quantidade do Item na Venda"); // Nova opção
+            System.out.println("   3.5. Finalizar Venda");
+            System.out.println("   3.6. Realizar Pagamento de Venda");
+            System.out.println("   3.7. Entregar Venda"); // Nova opção
+            System.out.println("   3.8. Listar Vendas Detalhado");
             System.out.println("4. Sair");
             System.out.print("Escolha uma opção: ");
 
-            String opcaoStr = scanner.nextLine(); // Lê a entrada como String
+            String opcaoStr = scanner.nextLine();
             try {
-                opcao = Integer.parseInt(opcaoStr.replace(".", "")); // Tenta converter para int, removendo o ponto
+                opcao = Integer.parseInt(opcaoStr.replace(".", ""));
             } catch (NumberFormatException e) {
-                opcao = -1; // Mantém como -1 se não for um número válido
+                opcao = -1;
             }
 
             switch (opcao) {
-                case 1:
-                case 11: cadastrarCliente(); break; // Opção 1 ou 11
+                case 11: cadastrarCliente(); break;
                 case 12: listarClientes(); break;
-                case 2:
-                case 21: cadastrarProduto(); break; // Opção 2 ou 21
+                case 13: atualizarCliente(); break; // Nova opção
+                case 21: cadastrarProduto(); break;
                 case 22: listarProdutos(); break;
-                case 3:
-                case 31: criarVenda(); break; // Opção 3 ou 31
+                case 23: atualizarProduto(); break; // Nova opção
+                case 31: criarVenda(); break;
                 case 32: adicionarItemVenda(); break;
-                case 33: finalizarVenda(); break;
-                case 34: realizarPagamentoVenda(); break;
-                case 35: listarVendasDetalhado(); break;
+                case 33: removerItemVenda(); break; // Nova opção
+                case 34: alterarQuantidadeItemVenda(); break; // Nova opção
+                case 35: finalizarVenda(); break;
+                case 36: realizarPagamentoVenda(); break;
+                case 37: entregarVenda(); break; // Nova opção
+                case 38: listarVendasDetalhado(); break;
                 case 4: System.out.println("Saindo..."); break;
                 default: System.out.println("Opção inválida!");
             }
@@ -77,6 +84,30 @@ public class Main {
         gClientes.listarClientes();
     }
 
+    private static void atualizarCliente() {
+        System.out.print("ID do Cliente a ser atualizado: ");
+        if (!scanner.hasNextInt()) {
+            System.out.println("ID de cliente inválido.");
+            scanner.nextLine(); // Limpar buffer
+            return;
+        }
+        int idCliente = scanner.nextInt();
+        scanner.nextLine(); // Limpar buffer
+        Cliente clienteExistente = gClientes.buscarClientePorId(idCliente);
+        if (clienteExistente == null) {
+            System.out.println("Cliente não encontrado.");
+            return;
+        }
+        System.out.print("Novo Nome (" + clienteExistente.getNome() + "): ");
+        String nome = scanner.nextLine();
+        System.out.print("Novo Documento (" + clienteExistente.getDocumento() + "): ");
+        String doc = scanner.nextLine();
+        System.out.print("Novo Email (" + clienteExistente.getEmail() + "): ");
+        String email = scanner.nextLine();
+        gClientes.atualizarCliente(idCliente, nome, doc, email);
+    }
+
+
     private static void cadastrarProduto() {
         System.out.print("Nome: ");
         String nome = scanner.nextLine();
@@ -89,6 +120,29 @@ public class Main {
     private static void listarProdutos() {
         gProdutos.listarProdutos();
     }
+
+    private static void atualizarProduto() {
+        System.out.print("ID do Produto a ser atualizado: ");
+        if (!scanner.hasNextInt()) {
+            System.out.println("ID de produto inválido.");
+            scanner.nextLine(); // Limpar buffer
+            return;
+        }
+        int idProduto = scanner.nextInt();
+        scanner.nextLine(); // Limpar buffer
+        Produto produtoExistente = gProdutos.buscarProdutoPorId(idProduto);
+        if (produtoExistente == null) {
+            System.out.println("Produto não encontrado.");
+            return;
+        }
+        System.out.print("Novo Nome (" + produtoExistente.getNome() + "): ");
+        String nome = scanner.nextLine();
+        System.out.print("Novo Preço (" + produtoExistente.getPreco() + "): ");
+        double preco = scanner.nextDouble();
+        scanner.nextLine(); // Limpar buffer
+        gProdutos.atualizarProduto(idProduto, nome, preco);
+    }
+
 
     private static void criarVenda() {
         if (vendaAtual != null && vendaAtual.getStatus().equals("aberto")) {
@@ -122,7 +176,6 @@ public class Main {
             scanner.nextLine();
             double precoVenda = produtoSelecionado.getPreco();
             System.out.print("Preço de venda (R$" + precoVenda + " - padrão, ou digite novo preço): ");
-            System.out.println("Main: Adicionando item - Produto: " + produtoSelecionado.getNome() + ", Quantidade: " + quantidade + ", Preço Venda: " + precoVenda); // ADICIONADO
             if (scanner.hasNextDouble()) {
                 precoVenda = scanner.nextDouble();
                 scanner.nextLine();
@@ -136,6 +189,45 @@ public class Main {
         } else {
             System.out.println("Item não adicionado à venda.");
         }
+    }
+
+    private static void removerItemVenda() {
+        if (vendaAtual == null || !vendaAtual.getStatus().equals("aberto")) {
+            System.out.println("Nenhuma venda aberta para remover itens.");
+            return;
+        }
+        System.out.print("Digite o ID do produto a remover da venda: ");
+        if (!scanner.hasNextInt()) {
+            System.out.println("ID de produto inválido.");
+            scanner.nextLine(); // Limpar buffer
+            return;
+        }
+        int produtoIdRemover = scanner.nextInt();
+        scanner.nextLine(); // Limpar buffer
+        gVendas.removerItemVenda(vendaAtual.getId(), produtoIdRemover);
+    }
+
+    private static void alterarQuantidadeItemVenda() {
+        if (vendaAtual == null || !vendaAtual.getStatus().equals("aberto")) {
+            System.out.println("Nenhuma venda aberta para alterar a quantidade de itens.");
+            return;
+        }
+        System.out.print("Digite o ID do produto para alterar a quantidade: ");
+        if (!scanner.hasNextInt()) {
+            System.out.println("ID de produto inválido.");
+            scanner.nextLine(); // Limpar buffer
+            return;
+        }
+        int produtoIdAlterar = scanner.nextInt();
+        System.out.print("Digite a nova quantidade: ");
+        if (!scanner.hasNextInt()) {
+            System.out.println("Quantidade inválida.");
+            scanner.nextLine(); // Limpar buffer
+            return;
+        }
+        int novaQuantidade = scanner.nextInt();
+        scanner.nextLine(); // Limpar buffer
+        gVendas.alterarQuantidadeItemVenda(vendaAtual.getId(), produtoIdAlterar, novaQuantidade);
     }
 
 
@@ -170,17 +262,21 @@ public class Main {
         }
     }
 
-
     private static void realizarPagamentoVenda() {
-        System.out.print("Digite o ID da venda para realizar o pagamento: ");
-        if (scanner.hasNextInt()) {
-            int vendaIdPagamento = scanner.nextInt();
-            scanner.nextLine();
-            gVendas.realizarPagamentoVenda(vendaIdPagamento);
-        } else {
-            System.out.println("ID de venda inválido.");
-            scanner.nextLine();
+        if (vendaAtual == null) {
+            System.out.println("Nenhuma venda selecionada. Crie e finalize uma venda primeiro.");
+            return;
         }
+        gVendas.realizarPagamentoVenda(vendaAtual.getId());
+    }
+
+    private static void entregarVenda() {
+        if (vendaAtual == null) {
+            System.out.println("Nenhuma venda selecionada. Realize o pagamento de uma venda finalizada primeiro.");
+            return;
+        }
+        gVendas.entregarVenda(vendaAtual.getId());
+        vendaAtual = null; // Limpa venda atual após entrega
     }
 
 
