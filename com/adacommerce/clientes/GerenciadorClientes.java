@@ -1,4 +1,3 @@
-// 2. GerenciadorClientes.java (Adicionado método atualizarCliente)
 package com.adacommerce.clientes;
 
 import java.io.BufferedReader;
@@ -73,7 +72,6 @@ public class GerenciadorClientes {
             System.out.println("Cliente ID " + id + " não encontrado.");
         }
     }
-
 
     public List<Cliente> getClientes() {
         return clientes;

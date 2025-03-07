@@ -1,4 +1,16 @@
-1,2,06/03/2025 04:22:28,fechado,Pago,15.50
-2,1,06/03/2025 04:36:00,aberto,null,0.0
-3,2,06/03/2025 04:37:11,fechado,Pago,39.90
-4,3,06/03/2025 04:44:35,fechado,Pago,119.97
+VENDA,1,1,08/03/2025 10:00:00,fechado,Pago,0.0
+VENDA,2,2,08/03/2025 11:30:00,aberto,,0.0
+VENDA,3,1,08/03/2025 12:45:00,fechado,Aguardando pagamento,0.0
+VENDA,4,3,08/03/2025 14:00:00,finalizado,Pago,0.0
+VENDA,5,2,08/03/2025 16:15:00,fechado,Pago,0.0
+VENDA,6,3,08/03/2025 17:30:00,aberto,,0.0
+VENDA,7,1,09/03/2025 09:00:00,fechado,Pago,0.0
+VENDA,8,2,09/03/2025 10:30:00,fechado,Aguardando pagamento,0.0
+VENDA,9,3,09/03/2025 14:20:34,aberto,,119.98
+ITEM,6,2,59.99
+VENDA,10,4,06/03/2025 22:34:55,aberto,null,289.97
+ITEM,3,1,129.99
+ITEM,6,1,59.99
+ITEM,9,1,99.99
+VENDA,11,4,06/03/2025 22:40:23,aberto,null,24.99
+ITEM,10,1,24.99

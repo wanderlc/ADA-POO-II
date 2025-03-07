@@ -1,4 +1,3 @@
-// 6. Venda.java (Adicionado métodos removerItem, alterarQuantidadeItem e entregarPedido)
 package com.adacommerce.vendas;
 
 import com.adacommerce.clientes.Cliente;
@@ -6,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Iterator; // Import Iterator
+import java.util.Iterator;
 
 public class Venda {
     private int id;
@@ -14,11 +13,9 @@ public class Venda {
     private List<ItemVenda> itens = new ArrayList<>();
     private String data;
     private String status = "aberto";
-    private String statusPagamento;
+    private String statusPagamento; // No default value initially
 
-    public Venda() {
-        // Construtor vazio necessário para CSV loading
-    }
+    public Venda() {}
 
     public Venda(int id, Cliente cliente) {
         this.id = id;
@@ -26,7 +23,6 @@ public class Venda {
         this.data = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
     }
 
-    // Getters
     public int getId() { return id; }
     public Cliente getCliente() { return cliente; }
     public List<ItemVenda> getItens() { return itens; }
@@ -34,15 +30,13 @@ public class Venda {
     public String getData() { return data; }
     public String getStatusPagamento() { return statusPagamento; }
 
-    // Setters (Adicionados para CSV loading)
     public void setId(int id) { this.id = id; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
     public void setData(String data) { this.data = data; }
     public void setStatus(String status) { this.status = status; }
     public void setStatusPagamento(String statusPagamento) { this.statusPagamento = statusPagamento; }
+    public void setItens(List<ItemVenda> itens) { this.itens = itens; }
 
-
-    // Métodos da venda
     public void adicionarItem(ItemVenda item) {
         if (status.equals("aberto")) {
             itens.add(item);
@@ -56,13 +50,9 @@ public class Venda {
                 ItemVenda item = iterator.next();
                 if (item.getProduto().getId() == produtoId) {
                     iterator.remove();
-                    System.out.println("Item do produto ID " + produtoId + " removido da venda.");
                     return;
                 }
             }
-            System.out.println("Item do produto ID " + produtoId + " não encontrado na venda.");
-        } else {
-            System.out.println("Não é possível remover itens de uma venda " + status + ".");
         }
     }
 
@@ -71,41 +61,30 @@ public class Venda {
             for (ItemVenda item : itens) {
                 if (item.getProduto().getId() == produtoId) {
                     item.setQuantidade(quantidade);
-                    System.out.println("Quantidade do produto ID " + produtoId + " alterada para " + quantidade + ".");
                     return;
                 }
             }
-            System.out.println("Item do produto ID " + produtoId + " não encontrado na venda.");
-        } else {
-            System.out.println("Não é possível alterar a quantidade de itens de uma venda " + status + ".");
         }
     }
 
-
     public void finalizarPedido() {
         if (itens.isEmpty()) {
-            System.out.println("Não é possível finalizar um pedido sem itens.");
             return;
         }
         if (calcularTotalVenda() <= 0) {
-            System.out.println("Não é possível finalizar um pedido com valor total zero ou negativo.");
             return;
         }
         statusPagamento = "Aguardando pagamento";
         status = "fechado";
-        System.out.println("Notificação enviada para " + cliente.getEmail() + ": Pedido finalizado e aguardando pagamento!");
     }
 
     public void entregarPedido() {
-        if (statusPagamento.equals("Pago")) {
-            status = "finalizado"; // Alterado para "finalizado"
-            System.out.println("Notificação enviada para " + cliente.getEmail() + ": Pedido entregue e finalizado!");
-        } else {
-            System.out.println("Não é possível entregar o pedido. Pagamento pendente.");
+        // Check for null statusPagamento before calling equals()
+        if (statusPagamento != null && statusPagamento.equals("Pago")) {
+            status = "finalizado";
         }
     }
 
-    // Novo método para calcular o total da venda
     public double calcularTotalVenda() {
         double total = 0.0;
         for (ItemVenda item : itens) {

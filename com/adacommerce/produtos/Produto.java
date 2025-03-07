@@ -1,4 +1,3 @@
-// 3. Produto.java (No changes needed)
 package com.adacommerce.produtos;
 
 public class Produto {
@@ -6,9 +5,7 @@ public class Produto {
     private String nome;
     private double preco;
 
-    public Produto() {
-        // Construtor vazio necessário para CSV loading
-    }
+    public Produto() {}
 
     public Produto(int id, String nome, double preco) {
         this.id = id;
@@ -16,13 +13,11 @@ public class Produto {
         this.preco = preco;
     }
 
-    // Getters
     public int getId() { return id; }
     public String getNome() { return nome; }
     public double getPreco() { return preco; }
 
-    // Setters
-    public void setId(int id) { this.id = id; } // Setter para ID necessário para Jackson
+    public void setId(int id) { this.id = id; }
     public void setNome(String nome) { this.nome = nome; }
     public void setPreco(double preco) { this.preco = preco; }
 }

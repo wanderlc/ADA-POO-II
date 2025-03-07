@@ -1,4 +1,3 @@
-// 4. GerenciadorProdutos.java (Adicionado método atualizarProduto)
 package com.adacommerce.produtos;
 
 import java.io.BufferedReader;
@@ -71,7 +70,6 @@ public class GerenciadorProdutos {
             System.out.println("Produto ID " + id + " não encontrado.");
         }
     }
-
 
     public List<Produto> getProdutos() {
         return produtos;

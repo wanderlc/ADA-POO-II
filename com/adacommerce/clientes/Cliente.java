@@ -6,8 +6,7 @@ public class Cliente {
     private String documento;
     private String email;
 
-    public Cliente() {
-    }
+    public Cliente() {}
 
     public Cliente(int id, String nome, String documento, String email) {
         this.id = id;
@@ -21,6 +20,7 @@ public class Cliente {
     public String getDocumento() { return documento; }
     public String getEmail() { return email; }
 
+    public void setId(int id) { this.id = id; }
     public void setNome(String nome) { this.nome = nome; }
     public void setDocumento(String documento) { this.documento = documento; }
     public void setEmail(String email) { this.email = email; }
